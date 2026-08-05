@@ -13,17 +13,24 @@ export const resolvers = {
       return prisma.item.findMany();
     },
   },
+  Item: {
+    category: async (parent: { categoryId: number }) => {
+      return prisma.category.findUnique({
+        where: { id: parent.categoryId },
+      });
+    },
+  },
   Mutation: {
-    createItem: async (_parent: unknown, args: { input: { name: string; quantity: number } }) => {
+    createItem: async (_parent: unknown, args: { input: { name: string; quantity: number; categoryId: string } }) => {
       return prisma.item.create({
-         data: args.input,
+         data: { ...args.input, categoryId: Number(args.input.categoryId) },
       })
     },
 
-    updateItem: async (_parent: unknown, args: { id: string; input: { name: string; quantity: number } }) => {
+    updateItem: async (_parent: unknown, args: { id: string; input: { name: string; quantity: number; categoryId: string } }) => {
       return prisma.item.update({
          where: { id: Number(args.id) },
-         data: args.input,
+         data: { ...args.input, categoryId: Number(args.input.categoryId) },
       })
     },
 
